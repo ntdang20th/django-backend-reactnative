@@ -1,0 +1,21 @@
+{% extends "admin/base_site.html" %}
+{% load i18n static jazzmin %}
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block content_title %}
+{% endblock %}
+
+{% get_jazzmin_ui_tweaks as jazzmin_ui %}
+
+{% block content %}
+<div class="iframe">
+  <iframe src="{% url 'map' %}" style="max-width: 100%; max-height: 90vh; box-sizing: 
+                                      border-box; 
+                                      margin: 0 auto;
+                                      width: 1800px;
+                                      height: 700px;
+                                      display: inline-block">
+  </iframe>
+</div>
+
+{% endblock %}

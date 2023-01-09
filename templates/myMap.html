@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css" integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI=" crossorigin="" />
+    <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js" integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM=" crossorigin=""></script>
+
+    <style>
+        #map{
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    </style>
+    <title>Document</title>
+</head>
+<body>
+      <div id="map">
+      </div>
+
+<script>
+    var map = L.map('map').setView([10.3714922,105.4335715], 15);
+
+    L.tileLayer('https://api.maptiler.com/maps/streets-v2/256/{z}/{x}/{y}.png?key=bUCCtjsuW38hE68VaRRR', {
+      attribution: '<a href="https://www.maptiler.com/copyright/" target="_blank">&copy; MapTiler</a> <a href="https://www.openstreetmap.org/copyright" target="_blank">&copy; OpenStreetMap contributors</a>'
+    }).addTo(map);
+
+    var maker = L.marker([10.3698763,105.4529752]).addTo(map);
+
+    const list_UUID = [];
+    const list_marker = [];
+
+    var url = 'ws://127.0.0.1:8000/ws/location/'
+    // var url = 'ws://192.168.70.130:8001/ws/location/'
+
+    const positions = {
+        0: 'normal position',
+        1: 'fall deteceted',
+        2: 'fallen'
+    }
+
+    var socket = new WebSocket(url);
+
+    socket.onopen = function (e) {
+      console.log('socket connected')
+    }
+
+    socket.onmessage = function (e) {
+      var data = JSON.parse(e.data);
+      console.log(data);
+      if (data.data) {
+        addData(data.data);
+      }
+    }
+
+    socket.onclose = function (e) {
+      console.log('socket disconnected')
+    }
+
+    function addData(data) {
+      var uuid = data['device']['uuid'];
+      if(!list_UUID.includes(uuid)){
+        list_UUID.push(uuid);
+
+        //add marker
+        var latitude = data['latitude'];
+        var longitude = data['longitude'];
+        var marker = L.marker([latitude, longitude]).addTo(map);
+        marker.bindPopup("<b><a href='/admin/patient/patient/' target='_blank'>" + data.device.patient.patient_info['last_name'] +" "+ data.device.patient.patient_info['first_name'] + "</a></b><br>" + positions[ data.device['prediction']]).openPopup();
+
+        list_marker.push(marker);
+      }
+
+      
+
+    }
+  </script>
+<script async src="https://cdn.jsdelivr.net/npm/masonry-layout@4.2.2/dist/masonry.pkgd.min.js"
+    integrity="sha384-GNFwBvfVxBkLMJpYMOABq3c+d3KnQxudP/mGPkzpZSTYykLBNsZEnG2D9G/X/+7D"
+    crossorigin="anonymous"></script>
+
+</body> 
+
+</html>
