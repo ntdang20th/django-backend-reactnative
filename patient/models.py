@@ -31,7 +31,7 @@ class PatientInfo(models.Model):
 
 class Patient(models.Model):
     doctor = models.ForeignKey(Doctor, on_delete=models.CASCADE)
-    patient_info = models.ForeignKey(PatientInfo, on_delete=models.CASCADE, related_name='info')
+    patient_info = models.ForeignKey(PatientInfo, on_delete=models.CASCADE)
 
 
 class HasPatientFamiliar(models.Model):

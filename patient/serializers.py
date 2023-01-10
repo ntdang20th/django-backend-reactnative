@@ -14,7 +14,7 @@ class PatientInfoSerializer(serializers.ModelSerializer):
     share_address = ShareAddressSerializer(read_only=True)
     class Meta:
         model = PatientInfo
-        fields = '__all__'
+        fields = ['last_name', 'first_name', 'gender', 'birth', 'phone_number', 'share_address', 'profile_picture']
 
 class PatientSerializer(serializers.ModelSerializer):
     doctor = DoctorSerializer(read_only=True)

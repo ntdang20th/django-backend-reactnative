@@ -1,3 +1,4 @@
+import json
 from django.shortcuts import render
 from .models import *
 from .serializers import *
@@ -29,7 +30,7 @@ class PatientModelViewSet(viewsets.ModelViewSet):
     filterset_fields = ['device']
     ordering_fields = ['device', 'doctor']
 
-
 class HasPatientFamiliarModelViewSet(viewsets.ModelViewSet):
     queryset = HasPatientFamiliar.objects.all()
     serializer_class = HasPatientFamiliarSerializer
+    

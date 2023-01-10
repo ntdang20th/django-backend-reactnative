@@ -9,3 +9,6 @@ class Doctor(models.Model):
     share_address = models.ForeignKey(ShareAddress, on_delete=models.CASCADE)
     hospital_name = models.CharField(max_length=255, blank=True, null=True)
     profile_picture = models.CharField(max_length=255, null=True)
+    
+    def __str__(self):
+        return self.user.username;
