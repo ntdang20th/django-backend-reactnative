@@ -11,18 +11,23 @@ class DoctorModelViewSet(viewsets.ModelViewSet):
 
 @csrf_exempt
 def doctor_login(request):
-    print(request.method)
-    # username = request.POST['username']
-    # password = request.POST['password']
-    username = "doctor1"
-    password = '@D12346'
-    user = authenticate(request, username=username, password=password)
-    if user is not None:
-        login(request, user)
-        response = {'Success': 1, 
-                    'Message': 'login success'}
-        return JsonResponse(response)
-    else:
-        response = {'Success': 0, 
-                    'Message': 'login fail'}
-        return JsonResponse(response)
+    data = json.loads(request.body.decode('utf-8'))
+    user = json.loads(json.dumps(data))
+    print(user)
+    if request.method == 'POST':
+        username = user['username']
+        password = user['password']
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            doctor = Doctor.objects.get(user=user)
+            doctor_serializer = DoctorSerializer(doctor)
+            response = {'Success': 1, 
+                        'Message': 'login success',
+                        'data': doctor_serializer.data}
+            return JsonResponse(response)
+  
+    response = {'Success': 0, 
+                'Message': 'login fail'}
+    return JsonResponse(response)

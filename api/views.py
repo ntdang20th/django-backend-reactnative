@@ -17,6 +17,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from django.contrib.staticfiles.storage import staticfiles_storage
+from rest_framework.views import APIView
 
 from backend.settings import STATIC_ROOT
 
@@ -151,3 +152,4 @@ def ResponesLocation(request):
         }
     )
     return Response(json.loads(data))
+
