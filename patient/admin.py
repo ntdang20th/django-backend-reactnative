@@ -45,7 +45,6 @@ class PatientInfoAdmin(admin.ModelAdmin):
 
         return qs.filter(id__in = patients.values_list('patient_info'))
 
-
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
     list_display = ['id', 'doctor', 'patient_info']

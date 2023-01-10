@@ -24,9 +24,11 @@ class PatientSerializer(serializers.ModelSerializer):
         fields = ['doctor', 'patient_info']
 
 class HasPatientFamiliarSerializer(serializers.ModelSerializer):
+    patient = PatientSerializer(read_only=True)
+    familiar = FamiliarSerializer(read_only=True)
     class Meta:
         model = HasPatientFamiliar
-        fields = '__all__'
+        fields = ['patient', 'familiar']
 
 class DeviceSerializer(serializers.ModelSerializer):
     patient = PatientSerializer(read_only=True)

@@ -26,11 +26,27 @@ class PatientInfoModelViewSet(viewsets.ModelViewSet):
 class PatientModelViewSet(viewsets.ModelViewSet):
     queryset = Patient.objects.all()
     serializer_class = PatientSerializer
-    filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
-    filterset_fields = ['device']
-    ordering_fields = ['device', 'doctor']
+    # filter_backends = [SearchFilter, DjangoFilterBackend, OrderingFilter]
+    # filterset_fields = ['device']
+    # ordering_fields = ['device', 'doctor']
+    
+    def get_queryset(self):
+        qs = super(PatientModelViewSet, self).get_queryset()
+        if self.request.user.is_superuser:
+            return qs
+        user = self.request.user
+        doctor = Doctor.objects.get(user=user)
+        return qs.filter(doctor=doctor)
 
 class HasPatientFamiliarModelViewSet(viewsets.ModelViewSet):
     queryset = HasPatientFamiliar.objects.all()
     serializer_class = HasPatientFamiliarSerializer
     
+    def get_queryset(self):
+        qs = super(HasPatientFamiliarModelViewSet, self).get_queryset()
+        if self.request.user.is_superuser:
+            return qs
+        user = self.request.user
+        doctor = Doctor.objects.get(user=user)
+        patients = Patient.objects.filter(doctor=doctor)
+        return qs.filter(patient__in=patients)
