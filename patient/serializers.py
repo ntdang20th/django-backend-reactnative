@@ -34,4 +34,4 @@ class DeviceSerializer(serializers.ModelSerializer):
     patient = PatientSerializer(read_only=True)
     class Meta:
         model = Device
-        fields = ['uuid', 'patient', 'crutch']
+        fields = '__all__'

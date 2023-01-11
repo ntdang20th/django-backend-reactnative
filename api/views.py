@@ -3,7 +3,7 @@ import os
 import pickle
 import shutil
 # import Orange
-
+from django.contrib.auth import authenticate, login
 from datetime import datetime
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -18,9 +18,11 @@ from rest_framework.response import Response
 from rest_framework.renderers import JSONRenderer
 from django.contrib.staticfiles.storage import staticfiles_storage
 from rest_framework.views import APIView
-
-from backend.settings import STATIC_ROOT
-
+from doctor.models import Doctor
+from doctor.serializers import DoctorSerializer
+from django.http import JsonResponse
+from patient.models import Familiar
+from patient.serializers import FamiliarSerializer
 
 # Create your views here.
 
@@ -153,3 +155,36 @@ def ResponesLocation(request):
     )
     return Response(json.loads(data))
 
+
+
+@csrf_exempt
+def user_login(request):
+    data = json.loads(request.body.decode('utf-8'))
+    user = json.loads(json.dumps(data))
+    print(user)
+    if request.method == 'POST':
+        username = user['username']
+        password = user['password']
+        is_doctor = user['is_doctor']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            if user.groups.filter(name='Doctor').exists() and is_doctor:
+                doctor = Doctor.objects.get(user=user)
+                doctor_serializer = DoctorSerializer(doctor)
+                response = {'Success': 1, 
+                            'Message': 'login success',
+                            'data': doctor_serializer.data}
+                return JsonResponse(response)
+            if user.groups.filter(name='Familiar').exists() and is_doctor == False:
+                fam = Familiar.objects.get(user=user)
+                fam_serializer = FamiliarSerializer(fam)
+                response = {'Success': 1, 
+                            'Message': 'login success',
+                            'data': fam_serializer.data}
+                return JsonResponse(response)
+        
+  
+    response = {'Success': 0, 
+                'Message': 'login fail'}
+    return JsonResponse(response)

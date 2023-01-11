@@ -1,8 +1,11 @@
+import json
 from django.db import models
+from django.views.decorators.csrf import csrf_exempt
 
 from address.models import ShareAddress
 from backend import settings
 from doctor.models import Doctor
+from django.http import JsonResponse
 
 
 

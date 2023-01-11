@@ -10,5 +10,4 @@ router.register(r'doctor', DoctorModelViewSet)
 
 urlpatterns = [
     path('', include(router.urls)),
-    path('doctor_login/', doctor_login)
 ]

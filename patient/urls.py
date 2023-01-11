@@ -13,5 +13,6 @@ router.register(r'patient', PatientModelViewSet)
 router.register(r'has-patient-familiar', HasPatientFamiliarModelViewSet)
 
 urlpatterns = [
-    path('', include(router.urls)),
+    path('add-patient/', add_patient),
+    path('', include(router.urls)), 
 ]
